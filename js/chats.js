@@ -110,14 +110,14 @@ function escapeHtml(text) {
 
 // ===== IR A ENVIAR MENSAJE =====
 function irAEnviar() {
-    window.location.href = 'message.html';
+    window.location.href = '/views/message.html';
 }
 
 // ===== CERRAR SESIÓN =====
 function cerrarSesion() {
     if (confirm('Esta seguro que desea cerrar sesion?')) {
         Session.cerrar();
-        window.location.href = 'login.html';
+        window.location.href = '/views/login.html';
     }
 }
 

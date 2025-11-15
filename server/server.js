@@ -7,7 +7,11 @@ const config = require("./db");
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+    origin: '*', // Permitir cualquier origen
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // Servir archivos estáticos (para Render)
