@@ -1,8 +1,6 @@
 // ===== CONFIGURACIÓN DE APIs =====
-// Para desarrollo local usa: 'http://localhost:3000'
-// Para producción en Render, cambia a tu URL de Render
-const API_BACKEND = 'http://localhost:3000';  // Cambiar por URL de Render cuando despliegues
-const API_AZURE = 'https://backcvbgtmdesa.azurewebsites.net/api';  // API del ingeniero
+const API_MENSAJES = 'https://desarrollowebfinal.onrender.com/api/mensajes-chat';  // API de mensajes (Render)
+const API_AZURE = 'https://backcvbgtmdesa.azurewebsites.net/api';  // API del ingeniero (Login y Envío)
 
 // ===== OBJETO DE CONEXIONES =====
 const API = {
@@ -49,10 +47,10 @@ const API = {
         };
     },
 
-    // Obtener mensajes (Tu servidor local - SQL Server)
+    // Obtener mensajes (API de Render - SQL Server)
     obtenerMensajes: async () => {
         try {
-            const response = await fetch(`${API_BACKEND}/mensajes`, {
+            const response = await fetch(`${API_MENSAJES}/mensajes`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
@@ -68,11 +66,11 @@ const API = {
                 throw new Error('Error del servidor');
             }
         } catch (error) {
-            console.error('Error conectando a servidor local:', error);
+            console.error('Error conectando al servidor:', error);
             return {
                 ok: false,
                 data: [],
-                error: 'Asegurese de ejecutar: node server/server.js'
+                error: 'Error al conectar con el servidor de mensajes'
             };
         }
     }
