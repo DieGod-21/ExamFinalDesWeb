@@ -12,38 +12,36 @@ const app = express();
 app.use(
     cors({
         origin: [
-            "https://examfinaldesweb.onrender.com",   // Frontend en Render
-            "https://desarrollowebfinal.onrender.com", // Backend en Render
-            "http://localhost:5500",                  // Desarrollo local (Live Server)
-            "http://localhost:3000"                   // Desarrollo backend local
+            "https://examfinaldesweb.onrender.com",
+            "https://desarrollowebfinal.onrender.com",
+            "http://localhost:5500",
+            "http://localhost:3000"
         ],
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"]
     })
 );
 
-// Necesario para preflight CORS de Chrome
-app.options("*", cors());
+// Necesario para preflight (Express 5)
+app.options("(.*)", cors());
 
 // ==============================
 // Middlewares
 // ==============================
 app.use(express.json());
 
-// Servir archivos estáticos para Render
+// Servir archivos estáticos
 app.use("/js", express.static(path.join(__dirname, "../js")));
 app.use("/views", express.static(path.join(__dirname, "../views")));
 app.use("/css", express.static(path.join(__dirname, "../views/css")));
 
-// ==============================
 // Página principal
-// ==============================
 app.get("/", (req, res) => {
     res.redirect("/views/login.html");
 });
 
 // ==============================
-// API – Obtener mensajes del SQL Server
+// API – Obtener mensajes
 // ==============================
 app.get("/api/mensajes-chat/mensajes", async (req, res) => {
     try {
