@@ -6,9 +6,14 @@ const config = {
     server: "svr-sql-ctezo.southcentralus.cloudapp.azure.com",
     database: "db_DesaWebDevUMG",
     options: {
-        encrypt: false,
-        trustServerCertificate: true
+        encrypt: true,               // Azure requiere esto
+        trustServerCertificate: false, // Certificado válido (Azure)
+    },
+    pool: {
+        max: 10,
+        min: 0,
+        idleTimeoutMillis: 30000
     }
 };
 
-module.exports = config;    
+module.exports = config;
