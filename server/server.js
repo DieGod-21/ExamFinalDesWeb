@@ -6,29 +6,27 @@ const config = require("./db");
 
 const app = express();
 
-// CORS
-app.use(cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
+// Middlewares
+app.use(cors());
 app.use(express.json());
 
-// Archivos estáticos
+// Servir archivos estáticos (para Render)
 app.use('/js', express.static(path.join(__dirname, '../js')));
 app.use('/views', express.static(path.join(__dirname, '../views')));
 app.use('/css', express.static(path.join(__dirname, '../views/css')));
 
-// Ruta principal
+// Ruta principal - redirigir al login
 app.get('/', (req, res) => {
     res.redirect('/views/login.html');
 });
 
-// Endpoint para obtener mensajes
+// Endpoint para obtener mensajes de la base de datos
 app.get("/mensajes", async (req, res) => {
     try {
+        console.log("Intentando conectar a SQL Server...");
         const pool = await sql.connect(config);
+        console.log("Conexión exitosa, ejecutando query...");
+        
         const result = await pool.request().query(`
             SELECT 
                 Login_Emisor AS login_emisor,
@@ -37,13 +35,22 @@ app.get("/mensajes", async (req, res) => {
             FROM dbo.Chat_Mensaje
             ORDER BY Fecha ASC
         `);
+        
+        console.log("Mensajes obtenidos:", result.recordset.length);
         res.json(result.recordset);
     } catch (err) {
-        console.error("Error SQL:", err);
-        res.status(500).json({ error: "Error consultando mensajes" });
+        console.error("Error SQL detallado:", err.message);
+        console.error("Código de error:", err.code);
+        res.status(500).json({ 
+            error: "Error consultando mensajes",
+            detalle: err.message,
+            codigo: err.code
+        });
     }
 });
 
-// Puerto Render
+// Puerto del servidor (Render asigna el puerto automáticamente)
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Servidor en puerto", PORT));
+app.listen(PORT, () => {
+    console.log(`Servidor backend ejecutándose en http://localhost:${PORT}`);
+});
