@@ -15,14 +15,12 @@ async function cargarMensajes() {
     const mensajesContainer = document.getElementById('mensajesContainer');
     const refreshBtn = document.getElementById('refreshBtn');
 
-    // Mostrar loading
     loadingState.classList.remove('d-none');
     emptyState.classList.add('d-none');
     mensajesContainer.classList.add('d-none');
     refreshBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i>';
 
     try {
-        // Llamar al API usando api.js
         const result = await API.obtenerMensajes();
 
         if (result.ok && result.data.length > 0) {
@@ -35,7 +33,6 @@ async function cargarMensajes() {
             emptyState.classList.remove('d-none');
         }
 
-        // Actualizar contador
         document.getElementById('totalMensajes').innerHTML = 
             `<i class="fas fa-envelope me-1"></i>${mensajesData.length} mensajes`;
 
@@ -57,37 +54,34 @@ function renderizarMensajes() {
     const container = document.getElementById('mensajesContainer');
     container.innerHTML = '';
 
-    // Ordenar por fecha (más antiguos primero)
-    mensajesData.sort((a, b) => new Date(a.fecha_hora) - new Date(b.fecha_hora));
+    // 🔥 USAR LOS NOMBRES REALES DEL BACKEND
+    mensajesData.sort((a, b) => new Date(a.Fecha_Envio) - new Date(b.Fecha_Envio));
 
     mensajesData.forEach((mensaje, index) => {
-        const esMio = mensaje.login_emisor === username;
-        const fecha = new Date(mensaje.fecha_hora);
-        const hora = fecha.toLocaleTimeString('es-GT', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
-        });
-        const fechaFormato = fecha.toLocaleDateString('es-GT', {
-            day: '2-digit',
-            month: 'short'
-        });
+
+        const autor = mensaje.Login_Emisor || "Desconocido";
+        const contenido = mensaje.Contenido || "(sin contenido)";
+
+        let fecha = new Date(mensaje.Fecha_Envio);
+        let hora = fecha.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit' });
+        let fechaFormato = fecha.toLocaleDateString('es-GT', { day: '2-digit', month: 'short' });
+
+        const esMio = autor.toLowerCase() === username.toLowerCase();
 
         const mensajeHTML = `
-            <div class="mensaje-item ${esMio ? 'mensaje-propio' : 'mensaje-otro'}" 
+            <div class="mensaje-item ${esMio ? 'mensaje-propio' : 'mensaje-otro'}"
                  style="animation-delay: ${index * 0.1}s">
                 <div class="mensaje-content">
                     <div class="mensaje-header">
                         <span class="mensaje-autor">
                             <i class="fas fa-user-circle me-1"></i>
-                            ${mensaje.login_emisor}
+                            ${autor}
                         </span>
                         <span class="mensaje-fecha">
                             ${fechaFormato} - ${hora}
                         </span>
                     </div>
-                    <div class="mensaje-texto">
-                        ${escapeHtml(mensaje.contenido)}
-                    </div>
+                    <div class="mensaje-texto">${escapeHtml(contenido)}</div>
                 </div>
             </div>
         `;
@@ -95,7 +89,6 @@ function renderizarMensajes() {
         container.innerHTML += mensajeHTML;
     });
 
-    // Scroll al final
     setTimeout(() => {
         container.scrollTop = container.scrollHeight;
     }, 100);
