@@ -1,5 +1,5 @@
 // ===== CONFIGURACIÓN DE APIs =====
-const API_MENSAJES = 'https://desarrollowebfinal.onrender.com/api/mensajes-chat';  // API de mensajes (Render)
+const API_MENSAJES = 'https://examfinaldesweb.onrender.com';  // TU propio servidor en Render
 const API_AZURE = 'https://backcvbgtmdesa.azurewebsites.net/api';  // API del ingeniero (Login y Envío)
 
 // ===== OBJETO DE CONEXIONES =====
