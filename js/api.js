@@ -1,4 +1,6 @@
 // ===== CONFIGURACIÓN DE APIs =====
+// Para pruebas locales, usa: 'http://localhost:3000'
+// Para producción, usa tu URL de Render: 'https://examfinaldesweb.onrender.com'
 const API_MENSAJES = 'https://examfinaldesweb.onrender.com';  // TU propio servidor en Render
 const API_AZURE = 'https://backcvbgtmdesa.azurewebsites.net/api';  // API del ingeniero (Login y Envío)
 
@@ -47,13 +49,19 @@ const API = {
         };
     },
 
-    // Obtener mensajes (API de Render - SQL Server)
+    // Obtener mensajes (usando TU PROPIO backend)
     obtenerMensajes: async () => {
+        const token = Session.getToken();
+        if (!token) {
+            return { ok: false, data: [], error: 'Token no encontrado' };
+        }
+
         try {
-            const response = await fetch(`${API_MENSAJES}/mensajes`, {
+            const response = await fetch(`${API_MENSAJES}/api/historial`, {
                 method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
             });
             
@@ -63,14 +71,15 @@ const API = {
                     data: await response.json()
                 };
             } else {
-                throw new Error('Error del servidor');
+                const errorData = await response.json().catch(() => ({ message: 'Error del servidor al obtener historial' }));
+                throw new Error(errorData.error || errorData.message);
             }
         } catch (error) {
-            console.error('Error conectando al servidor:', error);
+            console.error('Error conectando a tu servidor para obtener historial:', error);
             return {
                 ok: false,
                 data: [],
-                error: 'Error al conectar con el servidor de mensajes'
+                error: error.message || 'No se pudo obtener el historial'
             };
         }
     }

@@ -7,7 +7,7 @@ const config = {
     database: "db_DesaWebDevUMG",
     options: {
         encrypt: true,               // Azure requiere esto
-        trustServerCertificate: false, // Certificado válido (Azure)
+        trustServerCertificate: true, // Cambiado para pruebas en Render
     },
     pool: {
         max: 10,
